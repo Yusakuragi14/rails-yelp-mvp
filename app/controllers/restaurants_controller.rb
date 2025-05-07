@@ -8,6 +8,8 @@ class RestaurantsController < ApplicationController
 
   # GET /restaurants/1 or /restaurants/1.json
   def show
+    @review = Review.new
+    @reviews = @restaurant.reviews
   end
 
   # GET /restaurants/new
@@ -19,30 +21,26 @@ class RestaurantsController < ApplicationController
   def edit
   end
 
-  # POST /restaurants or /restaurants.json
+  # POST /create with valid or invalid params
   def create
     @restaurant = Restaurant.new(restaurant_params)
-
     respond_to do |format|
       if @restaurant.save
         format.html { redirect_to @restaurant, notice: "Restaurant was successfully created." }
-        format.json { render :show, status: :created, location: @restaurant }
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @restaurant.errors, status: :unprocessable_entity }
       end
     end
   end
+
 
   # PATCH/PUT /restaurants/1 or /restaurants/1.json
   def update
     respond_to do |format|
       if @restaurant.update(restaurant_params)
-        format.html { redirect_to @restaurant, notice: "Restaurant was successfully updated." }
-        format.json { render :show, status: :ok, location: @restaurant }
+        redirect_to @restaurant, notice: "Restaurant was successfully updated."
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @restaurant.errors, status: :unprocessable_entity }
+         render :edit, status: :unprocessable_entity
       end
     end
   end
@@ -52,8 +50,7 @@ class RestaurantsController < ApplicationController
     @restaurant.destroy!
 
     respond_to do |format|
-      format.html { redirect_to restaurants_path, status: :see_other, notice: "Restaurant was successfully destroyed." }
-      format.json { head :no_content }
+      redirect_to restaurants_path, status: :see_other
     end
   end
 
